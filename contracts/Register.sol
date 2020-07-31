@@ -139,8 +139,8 @@ contract Register {
         uint16 secondHexDec = uint16(time >> (1*8));
         uint8 second = uint8(10*(((secondHexDec & 0xff00) >> 8) - asciiValue0) + (secondHexDec & 0x00ff - asciiValue0));
         
-        uint16 zHexDec = uint16(time >> (0*8));
-        uint8 z = uint8(10*(((zHexDec & 0xff00) >> 8) - asciiValue0) + (zHexDec & 0x00ff - asciiValue0));
+        uint8 z = uint8(time >> (0*8));
+        require(z == 90);
         
         __timestamp = uint64(DateTime.toTimestamp(year, month, day, hour, minute, second));
     }
