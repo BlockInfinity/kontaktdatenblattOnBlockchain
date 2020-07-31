@@ -69,7 +69,7 @@ contract Register {
         emit MarktpartnerVerification(_marktpartner, name);
     }
     
-    function verifyAndRegisterMarktpartner_organizationName(bytes memory _certificate, uint256 _subjectSequence) internal returns(string memory __name) {
+    function verifyAndRegisterMarktpartner_organizationName(bytes memory _certificate, uint256 _subjectSequence) internal pure returns(string memory __name) {
         // TODO: Choose the right entry, not just the 3rd one.
         uint256 nameSet = _certificate.firstChildOf(_subjectSequence);
         nameSet = _certificate.nextSiblingOf(nameSet);
@@ -111,7 +111,7 @@ contract Register {
         __signatureValid = Verify.isValidSignatureForHash(pk_x, pk_y, r, s, uint256(contentHash));
     }
     
-    function time2Timestamp(bytes memory _time) internal returns(uint64 __timestamp) {
+    function time2Timestamp(bytes memory _time) internal pure returns(uint64 __timestamp) {
         // TODO: Implement 15 bytes time too
         require(_time.length == 13);
 
@@ -145,7 +145,7 @@ contract Register {
         __timestamp = uint64(DateTime.toTimestamp(year, month, day, hour, minute, second));
     }
     
-    function time2Uint256(bytes memory _time) internal returns(uint256 __time) {
+    function time2Uint256(bytes memory _time) internal pure returns(uint256 __time) {
         bytes memory time32 = new bytes(32);
         for(uint8 i = 0; i < 13; i++) {
             time32[31-i] = _time[12-i];
