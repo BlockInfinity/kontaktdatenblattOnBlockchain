@@ -15,9 +15,7 @@ contract Register {
     mapping(address => bool) public marktpartnerCreated;
     
     event MarktpartnerCreation(Marktpartner _marktpartner);
-    event Time(uint256 a, uint256 b);
-    event ProtoTime(uint16 yyyy, uint8 mm, uint8 dd, uint8 hh, uint8 minmin, uint8 ss, uint8 z);
-    event SingleNumber(uint256 _number);
+    event MarktpartnerVerification(Marktpartner _marktpartner, string _name);
     
     modifier onlyMarktparnter(Marktpartner _marktpartner) {
         require(marktpartnerCreated[address(_marktpartner)]);
@@ -50,7 +48,6 @@ contract Register {
         
         // TODO: Verify whether the certificate contains the Marktpartner's address
         
-        // TODO: extract organization's name from certificateContent
         // Verify timestamps
         uint256 rootSequence = _certificate.root();
         uint256 contentSequence = _certificate.firstChildOf(rootSequence);
@@ -63,9 +60,24 @@ contract Register {
         require(time2Timestamp(validityStart) <= now);
         require(time2Timestamp(validityEnd) >= now);
         
-        require(register["test"] == Marktpartner(0x0));
-        register["test"] = _marktpartner;
+        // Extract organization's name
+        string memory name = verifyAndRegisterMarktpartner_organizationName(_certificate, subjectSequence);
+        
+        require(register[name] == Marktpartner(0x0));
+        register[name] = _marktpartner;
         _marktpartner.setCertificate(_certificate);
+        emit MarktpartnerVerification(_marktpartner, name);
+    }
+    
+    function verifyAndRegisterMarktpartner_organizationName(bytes memory _certificate, uint256 _subjectSequence) internal returns(string memory __name) {
+        // TODO: Choose the right entry, not just the 3rd one.
+        uint256 nameSet = _certificate.firstChildOf(_subjectSequence);
+        nameSet = _certificate.nextSiblingOf(nameSet);
+        nameSet = _certificate.nextSiblingOf(nameSet);
+        uint256 nameSequence = _certificate.firstChildOf(nameSet);
+        uint256 nameObjectId = _certificate.firstChildOf(nameSequence);
+        uint256 namePrintableString = _certificate.nextSiblingOf(nameObjectId);
+        __name = string(_certificate.bytesAt(namePrintableString));
     }
     
     function createMarktpartner(bytes memory _certificate) public returns(Marktpartner __marktpartner) {
