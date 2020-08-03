@@ -35,8 +35,7 @@ contract Marktpartner {
         reservedDataField[bytes32("marketRole")] = true;
     }
     
-    // Functions ERC-725
-        // Modifiers ERC-725
+    // Modifiers ERC-725
     modifier onlyOwner {
         require(msg.sender == owner || msg.sender == address(this));
         _;
@@ -111,5 +110,47 @@ contract Marktpartner {
         __marktpartnerId = string(data[bytes32("marktpartnerId")]);
         __sector = string(data[bytes32("sector")]);
         __marketRole = string(data[bytes32("marketRole")]);
+    }
+    
+    function getContactInformationJson() public view returns(string memory __contactInformation) {
+        __contactInformation = string(abi.encodePacked('{',
+        '"companyName":"', data[bytes32("companyName")], '",',
+        '"headquartersAddress":"', data[bytes32("headquartersAddress")], '",',
+        '"webAddress":"', data[bytes32("webAddress")], '",',
+        '"vatId":"', data[bytes32("vatId")], '",',
+        '"marktpartnerId":"', data[bytes32("marktpartnerId")], '",',
+        '"sector":"', data[bytes32("sector")], '",',
+        '"marketRole":"', data[bytes32("marketRole")], '"',
+        '}'));
+    }
+    
+    function escape(bytes memory _seq) internal pure returns(bytes memory __result) {
+        __result = replace(replace(_seq, '\\', '\\\\'), '"', '\\"');
+    }
+    
+    function replace(bytes memory _seq, bytes1 _keyword, bytes memory _replacement) internal pure returns(bytes memory __result) {
+        uint64 occurances = 0;
+        for(uint64 i=0; i<_seq.length; i++) {
+            if(_seq[i] == _keyword[0]) {
+                occurances++;
+            }
+        }
+        
+        if(occurances == 0)
+            return _seq;
+        
+        __result = new bytes(_seq.length + occurances*(_replacement.length - 1));
+        
+        uint64 shift = 0;
+        for(uint64 i=0; i<_seq.length; i++) {
+            if(_seq[i] != _keyword[0]) {
+                __result[i+shift] = _seq[i];
+            } else {
+                for(uint64 j=0; j<_replacement.length; j++) {
+                    __result[i+shift] = _replacement[j];
+                    shift++;
+                }
+            }
+        }
     }
 }
