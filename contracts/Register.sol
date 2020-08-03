@@ -65,7 +65,7 @@ contract Register {
         
         require(register[name] == Marktpartner(0x0));
         register[name] = _marktpartner;
-        _marktpartner.setCertificate(_certificate);
+        _marktpartner.setCertificate(_certificate, name);
         emit MarktpartnerVerification(_marktpartner, name);
     }
     
