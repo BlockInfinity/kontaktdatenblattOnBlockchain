@@ -113,6 +113,8 @@ contract Marktpartner {
     }
     
     function getContactInformationJson() public view returns(string memory __contactInformation) {
+        require(verified);
+        
         __contactInformation = string(abi.encodePacked('{',
         '"companyName":"', data[bytes32("companyName")], '",',
         '"headquartersAddress":"', data[bytes32("headquartersAddress")], '",',
