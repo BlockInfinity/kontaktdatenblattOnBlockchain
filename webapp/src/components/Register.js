@@ -30,10 +30,17 @@ const Register = props => {
     createOrUpdateContactInformationModal,
     setCreateOrUpdateContactInformationModal
   ] = useState(false);
-  const toggleCreateOrUpdateContactInformationModal = () =>
+  const [
+    createOrUpdateContactInformationReadOnly,
+    setCreateOrUpdateContactInformationReadOnly
+  ] = useState(false);
+  const toggleCreateOrUpdateContactInformationModal = readOnly => {
+    console.log(readOnly);
+    setCreateOrUpdateContactInformationReadOnly(readOnly);
     setCreateOrUpdateContactInformationModal(
       !createOrUpdateContactInformationModal
     );
+  };
 
   const [data, updateData] = useState();
   useEffect(() => {
@@ -137,7 +144,9 @@ const Register = props => {
                       <td className="text-md-center align-middle">
                         <Button
                           color={marketPartner.verified ? "success" : "warning"}
-                          onClick={toggleCreateOrUpdateContactInformationModal}
+                          onClick={() =>
+                            toggleCreateOrUpdateContactInformationModal(true)
+                          }
                         >
                           Anzeigen
                         </Button>{" "}
@@ -170,7 +179,9 @@ const Register = props => {
                       <td className="text-md-right align-middle">
                         <Button
                           color="primary"
-                          onClick={toggleCreateOrUpdateContactInformationModal}
+                          onClick={() =>
+                            toggleCreateOrUpdateContactInformationModal(false)
+                          }
                         >
                           Ändern
                         </Button>{" "}
@@ -180,6 +191,7 @@ const Register = props => {
                           headquartersAddress={
                             marketPartner.headquartersAddress
                           }
+                          readOnly={createOrUpdateContactInformationReadOnly}
                           marketRole={marketPartner.marketRole}
                           marktpartnerId={marketPartner.marktpartnerId}
                           sector={marketPartner.sector}
@@ -187,7 +199,6 @@ const Register = props => {
                           webAddress={marketPartner.webAddress}
                           isOpen={createOrUpdateContactInformationModal}
                           toggle={toggleCreateOrUpdateContactInformationModal}
-                          readOnly={false}
                         />
                       </td>
                     </tr>
