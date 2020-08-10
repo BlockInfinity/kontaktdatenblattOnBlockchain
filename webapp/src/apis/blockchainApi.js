@@ -9,7 +9,7 @@ var web3;
 // config
 
 export const registerContractAddress =
-  "0x721160A3a4298D7399e2544E4D430aC40abE645D";
+  "0x04bc977A8918114Edd48fFbb8192c1A65B227912";
 export const txExplorerHost = "https://rinkeby.etherscan.io/tx/";
 export const addressExplorerHost = "https://rinkeby.etherscan.io/address/";
 
