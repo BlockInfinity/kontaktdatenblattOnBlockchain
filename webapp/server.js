@@ -11,4 +11,4 @@ app.use(bodyParser.json())
 
 app.use(express.static("dist"))
 
-app.listen(serverPort, () => console.log(`Example app listening on port ${serverPort}!`))
+app.listen(serverPort, () => console.log(`Web app listening on port ${serverPort}!`))

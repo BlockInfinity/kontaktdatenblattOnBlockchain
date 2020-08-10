@@ -2,16 +2,9 @@
 
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
 
-import Hello from "./sample/Hello.js";
-
-const mapStateToProps = state => ({});
-
-const mapDispatchToProps = dispatch => {
-  return {};
-};
+import Register from "./Register.js";
 
 class Main extends React.Component {
   constructor(props) {
@@ -22,12 +15,11 @@ class Main extends React.Component {
     return (
       <div>
         <div className="container-fluid h-100" style={{ marginTop: "100px" }}>
-          <Route exact path="/hello" component={Hello} />
-          <Route exact path="/" component={Hello} />
+          <Route exact path="/" component={Register} />
         </div>
       </div>
     );
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Main));
+export default withRouter(Main);

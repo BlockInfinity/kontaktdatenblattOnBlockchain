@@ -1,5 +1,10 @@
 pragma solidity  ^0.5.2;
 
+/*
+License: GPL-3.0
+Contact: contact@blockinfinity.com
+*/
+
 import "../dependencies/asn1-decode/contracts/Asn1Decode.sol";
 import "../dependencies/SmartMeterSignatureVerification/Verify.sol";
 import "../dependencies/ethereum-datetime/contracts/DateTime.sol";
@@ -13,11 +18,13 @@ contract Register {
     
     mapping(string => Marktpartner) public register;
     mapping(address => bool) public marktpartnerCreated;
+    address[] internal marktpartnerCreatedAddresses;
     
-    event MarktpartnerCreation(Marktpartner _marktpartner);
+    event MarktpartnerCreation(Marktpartner _marktpartner, string _name);
+    event MarktpartnerCompanyNameUpdate(Marktpartner _marktpartner, string _name);
     event MarktpartnerVerification(Marktpartner _marktpartner, string _name);
     
-    modifier onlyMarktparnter(Marktpartner _marktpartner) {
+    modifier onlyMarktpartner(Marktpartner _marktpartner) {
         require(marktpartnerCreated[address(_marktpartner)]);
         _;
     }
@@ -36,13 +43,25 @@ contract Register {
     }
     
     
-    function createMarktpartner() public returns(Marktpartner __marktpartner) {
-        __marktpartner = new Marktpartner(msg.sender, this);
+    function createMarktpartner(string memory _companyName) public returns(Marktpartner __marktpartner) {
+        require(register[_companyName] == Marktpartner(0x0));
+        __marktpartner = new Marktpartner(msg.sender, this, _companyName);
+        register[_companyName] = __marktpartner;
         marktpartnerCreated[address(__marktpartner)] = true;
-        emit MarktpartnerCreation(__marktpartner);
+        marktpartnerCreatedAddresses.push(address(__marktpartner));
+        emit MarktpartnerCreation(__marktpartner, _companyName);
     }
     
-    function verifyAndRegisterMarktpartner(Marktpartner _marktpartner, bytes memory _certificate) public onlyMarktparnter(_marktpartner) {
+    function setCompanyName(Marktpartner _marktpartner, string memory _oldCompanyName, string memory _newCompanyName) public onlyMarktpartner(_marktpartner) {
+        require(register[_oldCompanyName] == _marktpartner);
+        require(register[_newCompanyName] == Marktpartner(0x0));
+        register[_oldCompanyName] = Marktpartner(0x0);
+        register[_newCompanyName] = _marktpartner;
+        _marktpartner.setCompanyName(_newCompanyName);
+        emit MarktpartnerCompanyNameUpdate(_marktpartner, _newCompanyName);
+    }
+
+    function verifyAndRegisterMarktpartner(Marktpartner _marktpartner, bytes memory _certificate) public onlyMarktpartner(_marktpartner) {
         bool signatureValid = verifyCertificateSignature(_certificate);
         require(signatureValid);
         
@@ -57,15 +76,15 @@ contract Register {
         uint256 validityEndTime = _certificate.nextSiblingOf(validityStartTime);
         bytes memory validityStart = _certificate.bytesAt(validityStartTime);
         bytes memory validityEnd = _certificate.bytesAt(validityEndTime);
+        uint64 validityEndTimestamp = time2Timestamp(validityEnd);
         require(time2Timestamp(validityStart) <= now);
-        require(time2Timestamp(validityEnd) >= now);
+        require(validityEndTimestamp >= now);
         
         // Extract organization's name
         string memory name = verifyAndRegisterMarktpartner_organizationName(_certificate, subjectSequence);
         
-        require(register[name] == Marktpartner(0x0));
-        register[name] = _marktpartner;
-        _marktpartner.setCertificate(_certificate, name);
+        require(register[name] == _marktpartner);
+        _marktpartner.setCertificate(_certificate, validityEndTimestamp);
         emit MarktpartnerVerification(_marktpartner, name);
     }
     
@@ -80,11 +99,14 @@ contract Register {
         __name = string(_certificate.bytesAt(namePrintableString));
     }
     
-    function createMarktpartner(bytes memory _certificate) public returns(Marktpartner __marktpartner) {
-        __marktpartner = createMarktpartner();
+    function createMarktpartner(string memory _companyName, bytes memory _certificate) public returns(Marktpartner __marktpartner) {
+        __marktpartner = createMarktpartner(_companyName);
         verifyAndRegisterMarktpartner(__marktpartner, _certificate);
     }
     
+    function getMarktpartnerCreatedAddresses() public view returns (address[] memory) {
+        return marktpartnerCreatedAddresses;
+    }
     
     function verifyCertificateSignature(bytes memory _certificate) internal view returns(bool __signatureValid) {
         uint256 rootSequence = _certificate.root();

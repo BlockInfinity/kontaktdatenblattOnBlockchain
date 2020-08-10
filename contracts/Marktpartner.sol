@@ -1,5 +1,10 @@
 pragma solidity  ^0.5.2;
 
+/*
+License: GPL-3.0
+Contact: contact@blockinfinity.com
+*/
+
 import "./Register.sol";
 
 contract Marktpartner {
@@ -16,6 +21,7 @@ contract Marktpartner {
     // Other attributes
     Register public register;
     bytes public certificate;
+    uint64 public validityEndTimestamp;
     bool public verified;
     
     modifier onlyRegister {
@@ -23,10 +29,11 @@ contract Marktpartner {
         _;
     }
     
-    constructor(address _owner, Register _register) public {
+    constructor(address _owner, Register _register, string memory _companyName) public {
         owner = _owner;
         register = _register;
-        
+        data[bytes32("companyName")] = bytes(_companyName);
+    
         reservedDataField[bytes32("headquartersAddress")] = true;
         reservedDataField[bytes32("webAddress")] = true;
         reservedDataField[bytes32("vatId")] = true;
@@ -83,10 +90,15 @@ contract Marktpartner {
     }
 
     // Other functions
-    function setCertificate(bytes memory _certificate, string memory _companyName) public onlyRegister {
+    function setCertificate(bytes memory _certificate, uint64 _validityEndTimestamp) public onlyRegister {
         certificate = _certificate;
-        data[bytes32("companyName")] = bytes(_companyName);
+        validityEndTimestamp = _validityEndTimestamp;
         verified = true;
+    }
+
+    function setCompanyName(string memory _companyName) public onlyRegister {
+        require(!verified);
+        data[bytes32("companyName")] = bytes(_companyName);
     }
     
     function setContactInformation(string memory _headquartersAddress, string memory _webAddress, string memory _vatId,
@@ -101,7 +113,6 @@ contract Marktpartner {
     
     function getContactInformation() public view returns(string memory __companyName, string memory __headquartersAddress,
     string memory __webAddress, string memory __vatId, string memory __marktpartnerId, string memory __sector, string memory __marketRole) {
-        require(verified);
         
         __companyName = string(data[bytes32("companyName")]);
         __headquartersAddress = string(data[bytes32("headquartersAddress")]);
@@ -113,7 +124,6 @@ contract Marktpartner {
     }
     
     function getContactInformationJson() public view returns(string memory __contactInformation) {
-        require(verified);
         
         __contactInformation = string(abi.encodePacked('{',
         '"companyName":"', data[bytes32("companyName")], '",',
