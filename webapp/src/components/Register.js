@@ -14,31 +14,28 @@ import VerifyMarktpartnerModal from "./modals/VerifyMarktpartnerModal.js";
 import CreateOrUpdateContactInformationModal from "./modals/CreateOrUpdateContactInformationModal.js";
 
 const Register = props => {
-  const [createMarktpartnerModal, setCreateMarktpartnerModal] = useState(false);
-  const toggleCreateMarktpartnerModal = () =>
-    setCreateMarktpartnerModal(!createMarktpartnerModal);
+  const [createMarktpartnerModal, setCreateMarktpartnerModal] = useState(null);
+  const toggleCreateMarktpartnerModal = identifier => {
+    setCreateMarktpartnerModal(!createMarktpartnerModal ? identifier : null);
+  };
 
-  const [updateCompanyNameModal, setUpdateCompanyNameModal] = useState(false);
-  const toggleUpdateCompanyNameModal = () =>
-    setUpdateCompanyNameModal(!updateCompanyNameModal);
+  const [updateCompanyNameModal, setUpdateCompanyNameModal] = useState(null);
+  const toggleUpdateCompanyNameModal = identifier => {
+    setUpdateCompanyNameModal(!updateCompanyNameModal ? identifier : null);
+  };
 
-  const [verifyMarktpartnerModal, setVerifyMarktpartnerModal] = useState(false);
-  const toggleVerifyMarktpartnerModal = () =>
-    setVerifyMarktpartnerModal(!verifyMarktpartnerModal);
+  const [verifyMarktpartnerModal, setVerifyMarktpartnerModal] = useState(null);
+  const toggleVerifyMarktpartnerModal = identifier => {
+    setVerifyMarktpartnerModal(!verifyMarktpartnerModal ? identifier : null);
+  };
 
   const [
     createOrUpdateContactInformationModal,
     setCreateOrUpdateContactInformationModal
-  ] = useState(false);
-  const [
-    createOrUpdateContactInformationReadOnly,
-    setCreateOrUpdateContactInformationReadOnly
-  ] = useState(false);
-  const toggleCreateOrUpdateContactInformationModal = readOnly => {
-    console.log(readOnly);
-    setCreateOrUpdateContactInformationReadOnly(readOnly);
+  ] = useState(null);
+  const toggleCreateOrUpdateContactInformationModal = identifier => {
     setCreateOrUpdateContactInformationModal(
-      !createOrUpdateContactInformationModal
+      !createOrUpdateContactInformationModal ? identifier : null
     );
   };
 
@@ -132,12 +129,15 @@ const Register = props => {
                         </a>{" "}
                         <FaRegEdit
                           color="#037BFF"
-                          onClick={toggleUpdateCompanyNameModal}
+                          onClick={() =>
+                            toggleUpdateCompanyNameModal(marketPartner.address)
+                          }
                         />
                         <UpdateCompanyNameModal
-                          marketPartnerAddress={marketPartner.address}
-                          oldCompanyName={marketPartner.companyName}
-                          isOpen={updateCompanyNameModal}
+                          marketPartner={marketPartner}
+                          isOpen={
+                            updateCompanyNameModal === marketPartner.address
+                          }
                           toggle={toggleUpdateCompanyNameModal}
                         />
                       </th>
@@ -145,11 +145,22 @@ const Register = props => {
                         <Button
                           color={marketPartner.verified ? "success" : "warning"}
                           onClick={() =>
-                            toggleCreateOrUpdateContactInformationModal(true)
+                            toggleCreateOrUpdateContactInformationModal(
+                              marketPartner.address + "readOnly"
+                            )
                           }
                         >
                           Anzeigen
                         </Button>{" "}
+                        <CreateOrUpdateContactInformationModal
+                          marketPartner={marketPartner}
+                          readOnly={true}
+                          isOpen={
+                            createOrUpdateContactInformationModal ===
+                            marketPartner.address + "readOnly"
+                          }
+                          toggle={toggleCreateOrUpdateContactInformationModal}
+                        />
                       </td>
                       <td className="text-md-center align-middle">
                         {marketPartner.verified ? (
@@ -157,7 +168,11 @@ const Register = props => {
                         ) : (
                           <Button
                             color="primary"
-                            onClick={toggleVerifyMarktpartnerModal}
+                            onClick={() =>
+                              toggleVerifyMarktpartnerModal(
+                                marketPartner.address
+                              )
+                            }
                           >
                             Verifizieren
                           </Button>
@@ -167,12 +182,14 @@ const Register = props => {
                           ? "(bis: " +
                             moment
                               .unix(marketPartner.validityEndTimestamp)
-                              .format("MM.DD.YYYY") +
+                              .format("DD.MM.YYYY") +
                             ")"
                           : ""}
                         <VerifyMarktpartnerModal
-                          marketPartnerAddress={marketPartner.address}
-                          isOpen={verifyMarktpartnerModal}
+                          marketPartner={marketPartner}
+                          isOpen={
+                            verifyMarktpartnerModal === marketPartner.address
+                          }
                           toggle={toggleVerifyMarktpartnerModal}
                         />
                       </td>
@@ -180,24 +197,20 @@ const Register = props => {
                         <Button
                           color="primary"
                           onClick={() =>
-                            toggleCreateOrUpdateContactInformationModal(false)
+                            toggleCreateOrUpdateContactInformationModal(
+                              marketPartner.address
+                            )
                           }
                         >
                           Ändern
                         </Button>{" "}
                         <CreateOrUpdateContactInformationModal
-                          marketPartnerAddress={marketPartner.address}
-                          companyName={marketPartner.companyName}
-                          headquartersAddress={
-                            marketPartner.headquartersAddress
+                          marketPartner={marketPartner}
+                          readOnly={false}
+                          isOpen={
+                            createOrUpdateContactInformationModal ===
+                            marketPartner.address
                           }
-                          readOnly={createOrUpdateContactInformationReadOnly}
-                          marketRole={marketPartner.marketRole}
-                          marktpartnerId={marketPartner.marktpartnerId}
-                          sector={marketPartner.sector}
-                          vatId={marketPartner.vatId}
-                          webAddress={marketPartner.webAddress}
-                          isOpen={createOrUpdateContactInformationModal}
                           toggle={toggleCreateOrUpdateContactInformationModal}
                         />
                       </td>

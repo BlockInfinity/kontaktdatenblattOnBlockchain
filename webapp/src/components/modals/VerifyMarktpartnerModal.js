@@ -111,7 +111,7 @@ const VerifyMarktpartnerModal = props => {
                 try {
                   setVerifyMarktpartnerStep(1);
                   let receipt = await blockchainApi.verifyCompanyName(
-                    props.marketPartnerAddress,
+                    props.marketPartner.address,
                     certificate
                   );
                   if (receipt.status) {

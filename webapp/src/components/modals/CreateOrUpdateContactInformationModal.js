@@ -26,31 +26,35 @@ const CreateOrUpdateContactInformationModal = props => {
   ] = useState(0);
 
   const [headquartersAddress, setHeadquartersAddress] = useState(
-    props.headquartersAddress
+    props.marketPartner.headquartersAddress
   );
-  const [marketRole, setMarketRole] = useState(props.marketRole);
-  const [marktpartnerId, setMarktpartnerId] = useState(props.marktpartnerId);
-  const [sector, setSector] = useState(props.sector);
-  const [vatId, setVatId] = useState(props.vatId);
-  const [webAddress, setWebAddress] = useState(props.webAddress);
+  const [marketRole, setMarketRole] = useState(props.marketPartner.marketRole);
+  const [marktpartnerId, setMarktpartnerId] = useState(
+    props.marketPartner.marktpartnerId
+  );
+  const [sector, setSector] = useState(props.marketPartner.sector);
+  const [vatId, setVatId] = useState(props.marketPartner.vatId);
+  const [webAddress, setWebAddress] = useState(props.marketPartner.webAddress);
+
+  const [readOnly, setReadOnly] = useState(props.readOnly);
 
   const [response, setResponse] = useState("");
 
   const onClosed = () => {
     setCreateOrUpdateContactInformationStep(0);
-    setHeadquartersAddress(props.headquartersAddress);
-    setMarketRole(props.marketRole);
-    setMarktpartnerId(props.marktpartnerId);
-    setSector(props.sector);
-    setVatId(props.vatId);
-    setWebAddress(props.webAddress);
+    setHeadquartersAddress(props.marketPartner.headquartersAddress);
+    setMarketRole(props.marketPartner.marketRole);
+    setMarktpartnerId(props.marketPartner.marktpartnerId);
+    setSector(props.marketPartner.sector);
+    setVatId(props.marketPartner.vatId);
+    setWebAddress(props.marketPartner.webAddress);
     setResponse("");
   };
 
   return (
     <Modal isOpen={props.isOpen} toggle={props.toggle} onClosed={onClosed}>
       <ModalHeader toggle={props.toggle}>
-        Kontaktinformationen {props.readOnly ? "ansehen" : "ändern"}
+        Kontaktinformationen {readOnly ? "ansehen" : "ändern"}
       </ModalHeader>
       <ModalBody>
         {createOrUpdateContactInformationStep === 0 && (
@@ -61,7 +65,7 @@ const CreateOrUpdateContactInformationModal = props => {
                 type="text"
                 name="companyName"
                 id="companyName"
-                value={props.companyName}
+                value={props.marketPartner.companyName}
                 disabled={true}
               />
             </FormGroup>
@@ -73,11 +77,11 @@ const CreateOrUpdateContactInformationModal = props => {
                 id="headquartersAddress"
                 placeholder="Adresse"
                 value={
-                  props.readOnly && !props.headquartersAddress
+                  readOnly && !headquartersAddress
                     ? "keine Angabe"
                     : headquartersAddress
                 }
-                disabled={props.readOnly}
+                disabled={readOnly}
                 onChange={name => setHeadquartersAddress(name.target.value)}
               />
             </FormGroup>
@@ -88,12 +92,8 @@ const CreateOrUpdateContactInformationModal = props => {
                 name="marketRole"
                 id="marketRole"
                 placeholder="Marktrolle"
-                value={
-                  props.readOnly && !props.marketRole
-                    ? "keine Angabe"
-                    : marketRole
-                }
-                disabled={props.readOnly}
+                value={readOnly && !marketRole ? "keine Angabe" : marketRole}
+                disabled={readOnly}
                 onChange={name => setMarketRole(name.target.value)}
               />
             </FormGroup>
@@ -105,11 +105,9 @@ const CreateOrUpdateContactInformationModal = props => {
                 id="marktpartnerId"
                 placeholder="Marktpartner ID"
                 value={
-                  props.readOnly && !props.marktpartnerId
-                    ? "keine Angabe"
-                    : marktpartnerId
+                  readOnly && !marktpartnerId ? "keine Angabe" : marktpartnerId
                 }
-                disabled={props.readOnly}
+                disabled={readOnly}
                 onChange={name => setMarktpartnerId(name.target.value)}
               />
             </FormGroup>
@@ -120,10 +118,8 @@ const CreateOrUpdateContactInformationModal = props => {
                 name="sector"
                 id="sector"
                 placeholder="Sektor"
-                value={
-                  props.readOnly && !props.sector ? "keine Angabe" : sector
-                }
-                disabled={props.readOnly}
+                value={readOnly && !sector ? "keine Angabe" : sector}
+                disabled={readOnly}
                 onChange={name => setSector(name.target.value)}
               />
             </FormGroup>
@@ -134,8 +130,8 @@ const CreateOrUpdateContactInformationModal = props => {
                 name="vatId"
                 id="vatId"
                 placeholder="Vat ID"
-                value={props.readOnly && !props.vatId ? "keine Angabe" : vatId}
-                disabled={props.readOnly}
+                value={readOnly && !vatId ? "keine Angabe" : vatId}
+                disabled={readOnly}
                 onChange={name => setVatId(name.target.value)}
               />
             </FormGroup>
@@ -146,18 +142,14 @@ const CreateOrUpdateContactInformationModal = props => {
                 name="webAddress"
                 id="webAddress"
                 placeholder="Web-Adresse"
-                value={
-                  props.readOnly && !props.webAddress
-                    ? "keine Angabe"
-                    : webAddress
-                }
-                disabled={props.readOnly}
+                value={readOnly && !webAddress ? "keine Angabe" : webAddress}
+                disabled={readOnly}
                 onChange={name => setWebAddress(name.target.value)}
               />
             </FormGroup>
           </Form>
         )}
-        {!props.readOnly && createOrUpdateContactInformationStep === 1 && (
+        {!readOnly && createOrUpdateContactInformationStep === 1 && (
           <div style={{ textAlign: "center" }}>
             <HashLoader
               color={"#037BFF"}
@@ -167,7 +159,7 @@ const CreateOrUpdateContactInformationModal = props => {
             <div>(Bitte Transaktion in MetaMask bestätigen)</div>
           </div>
         )}
-        {!props.readOnly && createOrUpdateContactInformationStep === 2 && (
+        {!readOnly && createOrUpdateContactInformationStep === 2 && (
           <div style={{ textAlign: "center" }}>
             <FaCheckCircle color="#28a745" size="50px" />
             <div style={{ marginTop: "20px" }}>
@@ -180,7 +172,7 @@ const CreateOrUpdateContactInformationModal = props => {
             </div>
           </div>
         )}
-        {!props.readOnly && createOrUpdateContactInformationStep === 3 && (
+        {!readOnly && createOrUpdateContactInformationStep === 3 && (
           <div style={{ textAlign: "center" }}>
             <FaExclamationCircle color="#e0a800" size="50px" />
             <div style={{ marginTop: "20px" }}>{response}</div>
@@ -188,12 +180,12 @@ const CreateOrUpdateContactInformationModal = props => {
         )}
       </ModalBody>
       <ModalFooter>
-        {props.readOnly && (
+        {readOnly && (
           <Button color="primary" onClick={props.toggle}>
             Schließen
           </Button>
         )}
-        {!props.readOnly && createOrUpdateContactInformationStep === 0 && (
+        {!readOnly && createOrUpdateContactInformationStep === 0 && (
           <div>
             <Button color="primary" onClick={props.toggle}>
               Abbrechen
@@ -204,7 +196,7 @@ const CreateOrUpdateContactInformationModal = props => {
                 try {
                   setCreateOrUpdateContactInformationStep(1);
                   let receipt = await blockchainApi.updateContactInformation(
-                    props.marketPartnerAddress,
+                    props.marketPartner.address,
                     headquartersAddress,
                     marketRole,
                     marktpartnerId,
@@ -229,12 +221,12 @@ const CreateOrUpdateContactInformationModal = props => {
             </Button>
           </div>
         )}
-        {!props.readOnly && createOrUpdateContactInformationStep === 1 && (
+        {!readOnly && createOrUpdateContactInformationStep === 1 && (
           <Button color="primary" onClick={props.toggle}>
             Schließen
           </Button>
         )}
-        {!props.readOnly && createOrUpdateContactInformationStep === 2 && (
+        {!readOnly && createOrUpdateContactInformationStep === 2 && (
           <Button color="primary" onClick={props.toggle}>
             Schließen
           </Button>

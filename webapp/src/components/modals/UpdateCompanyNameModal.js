@@ -22,13 +22,15 @@ const blockchainApi = require("../../apis/blockchainApi.js");
 const UpdateCompanyNameModal = props => {
   const [updateCompanyNameStep, setUpdateCompanyNameStep] = useState(0);
 
-  const [newCompanyName, setNewCompanyName] = useState(props.oldCompanyName);
+  const [newCompanyName, setNewCompanyName] = useState(
+    props.marketPartner.companyName
+  );
 
   const [response, setResponse] = useState("");
 
   const onClosed = () => {
     setUpdateCompanyNameStep(0);
-    setNewCompanyName(props.oldCompanyName);
+    setNewCompanyName(props.marketPartner.companyName);
     setResponse("");
   };
 
@@ -44,7 +46,7 @@ const UpdateCompanyNameModal = props => {
                 type="text"
                 name="oldCompanyName"
                 id="oldCompanyName"
-                value={props.oldCompanyName}
+                value={props.marketPartner.companyName}
                 disabled={true}
               />
             </FormGroup>
@@ -106,7 +108,7 @@ const UpdateCompanyNameModal = props => {
                   alert("Organsationsname muss mindestens 3 Zeichen haben.");
                   return;
                 }
-                if (props.oldCompanyName === newCompanyName) {
+                if (props.marketPartner.companyName === newCompanyName) {
                   alert(
                     "Neuer Organisationsname entspricht dem bisherigen Organisationsnamen."
                   );
@@ -115,8 +117,8 @@ const UpdateCompanyNameModal = props => {
                 try {
                   setUpdateCompanyNameStep(1);
                   let receipt = await blockchainApi.updateCompanyName(
-                    props.marketPartnerAddress,
-                    props.oldCompanyName,
+                    props.marketPartner.address,
+                    props.marketPartner.companyName,
                     newCompanyName
                   );
                   if (receipt.status) {
