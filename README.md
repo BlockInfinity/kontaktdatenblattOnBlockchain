@@ -4,7 +4,7 @@
 
 Proof-of-concept for running "Kontaktdatenblatt" used for market communication in German energy industry on an Ethereum blockchain. The primary goal was to proof end-to-end verification of "Marktpartner" identities regarding their organisation names is possible purely on-chain using an on-chain verification algorithm (currently ECDSA with SHA256 supported) and existing certificates (SM-PKI EMT).
 
-This work is inspired by discussions in [BCI-E+](https://blockchain-initiative.de).
+This work is inspired by discussions in [BCI-E+](https://blockchain-initiative.de), in particular the idea of leveraging existing SM-PKI EMT certificates for this use case.
 
 ## Architecture
 
