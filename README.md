@@ -2,29 +2,34 @@
 
 ## Introduction
 
-Proof-of-concept for running "Kontaktdatenblatt" used for market communication in German energy industry on Blockchain.
+Proof-of-concept for running "Kontaktdatenblatt" used for market communication in German energy industry on an Ethereum blockchain. The primary goal was to proof end-to-end verification of "Marktpartner" identities regarding their organisation names is possible purely on-chain using an on-chain verification algorithm (currently ECDSA with SHA256 supported) and existing certificates (SM-PKI EMT).
 
-This work was inspired by discussions in [BCI-E+](https://blockchain-initiative.de/) ([press article](https://blockchain-initiative.de/presseinformation/blockchain-fuer-die-kontaktdaten-der-marktkommunikation)).
+This work is inspired by discussions in [BCI-E+](https://blockchain-initiative.de).
+
+## Architecture
+
+### Smart contract architecture:
+!["Image 1"](./misc/uml.svg)
 
 ## Example
 
-### Register a new "Marktpartner":
+### "Marktpartner" registers itself ([DID](https://www.w3.org/TR/did-core/)):
 !["Image 1"](./misc/image1.png)
-### Show essential information for certificate issuing:
+### Show data to be included in a certificate:
 !["Image 2"](./misc/image2.png)
-### List all "Marktpartner" including its verification status:
+### List all "Marktpartner" including their verification status:
 !["Image 3"](./misc/image3.png)
 ### Exemplarily verify a "Marktpartner" via a certificate issued by a trusted certificate authority:
 !["Image 4"](./misc/image4.png)
-### Trigger on-chain verification of provided certificate via transaction signing:
+### Trigger on-chain verification of provided certificate:
 !["Image 5"](./misc/image5.png)
-### On-chain verification of provided certificate processing:
+### On-chain verification of provided certificate:
 !["Image 6"](./misc/image6.png)
 ### Certificate successfully verified on-chain:
 !["Image 7"](./misc/image7.png)
 ### Verified "Marktpartner" highlighted accordingly:
 !["Image 8"](./misc/image8.png)
-### Edit additional contact information (excluding organisation name, which has been extracted from the certificate):
+### Edit additional contact information (besides organisation name, which has been extracted from the certificate):
 !["Image 9"](./misc/image9.png)
 ### Confirm contact information update:
 !["Image 10"](./misc/image10.png)
