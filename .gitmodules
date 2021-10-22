@@ -1,9 +1,9 @@
 [submodule "dependencies/asn1-decode"]
 	path = dependencies/asn1-decode
-	url = git@github.com:JonahGroendal/asn1-decode.git
+	url = ../../JonahGroendal/asn1-decode.git
 [submodule "dependencies/SmartMeterSignatureVerification"]
 	path = dependencies/SmartMeterSignatureVerification
-	url = git@github.com:BlockInfinity/SmartMeterSignatureVerification.git
+	url = ../SmartMeterSignatureVerification.git
 [submodule "dependencies/ethereum-datetime"]
 	path = dependencies/ethereum-datetime
-	url = git@github.com:BlockInfinity/ethereum-datetime.git
+	url = ../ethereum-datetime.git
